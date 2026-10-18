@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8f4">
+    <meta name="description" content="Trouvez un logement de confiance au Bénin avec StudiHome. Des annonces vérifiées, des prix transparents et des logements près des campus.">
+    <title>StudiHome — Trouvez votre chez-vous au Bénin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#accueil" aria-label="StudiHome, accueil">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M5 17.4 18 6l13 11.4v12.1a1.5 1.5 0 0 1-1.5 1.5h-23A1.5 1.5 0 0 1 5 29.5z"/><path d="M14 31V20h8v11M3.5 17.8 18 5l14.5 12.8"/></svg></span>
+        <span class="brand-name">studi<span>home</span><small>VOTRE CLÉ AU BÉNIN</small></span>
+      </a>
+      <button class="mobile-menu" id="mobile-menu" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav">
+        <a class="nav-link active" href="#accueil">Accueil</a>
+        <a class="nav-link" href="#logements">Logements</a>
+        <a class="nav-link" href="#universites">Vie étudiante</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Activer le thème sombre"><span class="theme-icon">☾</span><span class="theme-label">Mode sombre</span></button>
+        <button class="button button-quiet" data-auth="login">Connexion</button>
+        <button class="button button-primary nav-signup" data-auth="signup">S'inscrire <span aria-hidden="true">↗</span></button>
+        <button class="button button-primary hidden" id="account-button">Mon espace ↗</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="accueil">
+        <div class="hero-image"></div><div class="hero-overlay"></div>
+        <div class="hero-content">
+          <span class="eyebrow hero-eyebrow"><span class="eyebrow-dot"></span> LA LOCATION, EN TOUTE CONFIANCE</span>
+          <h1>Votre prochain<br>chez-vous <span>commence ici.</span></h1>
+          <p>Études, travail ou nouveau départ : trouvez le logement qui vous ressemble, partout au Bénin.</p>
+          <div class="hero-actions">
+            <a class="button button-lime" href="#logements">Explorer les logements <span aria-hidden="true">↗</span></a>
+            <button class="hero-text-link" data-auth="signup" data-role="owner">Vous êtes propriétaire ? <span>Publier une annonce →</span></button>
+          </div>
+          <div class="hero-trust"><div class="avatar-stack"><span>AK</span><span>MA</span><span>JD</span><span class="avatar-more">+</span></div><div><strong>Une recherche plus sereine</strong><small>Des annonces contrôlées, des informations claires.</small></div></div>
+        </div>
+        <div class="hero-note"><span>⌖</span><div><strong>Du campus au quartier</strong><small>Des logements partout au Bénin</small></div></div>
+        <a class="scroll-cue" href="#villes"><span></span> FAITES DÉFILER</a>
+      </section>
+
+      <section class="city-strip" id="villes" aria-label="Explorer les villes">
+        <div class="city-strip-label"><span class="tiny-icon">⌖</span><span>Explorer<br><strong>par ville</strong></span></div>
+        <div class="city-scroller" id="city-scroller"></div>
+        <button class="city-next" id="city-next" aria-label="Faire défiler les villes">→</button>
+      </section>
+
+      <section class="search-section" id="recherche">
+        <div class="search-intro"><span class="eyebrow">ON TROUVE POUR VOUS</span><h2>Le bon endroit.<br><span>Le bon budget.</span></h2><p>Affinez votre recherche pour trouver votre prochain chez-vous.</p></div>
+        <form class="search-panel" id="search-form">
+          <label class="search-field"><span class="field-icon">⌖</span><span class="field-content"><span class="field-label">Où cherchez-vous ?</span><select id="filter-city"><option value="">Toutes les villes</option></select></span><span class="field-chevron">⌄</span></label>
+          <label class="search-field"><span class="field-icon">₣</span><span class="field-content"><span class="field-label">Budget mensuel min.</span><span class="budget-input"><input id="filter-budget-min" type="number" min="150000" max="500000" step="5000" placeholder="150 000" aria-label="Budget minimum mensuel en FCFA"><span>FCFA</span></span></span></label>
+          <label class="search-field"><span class="field-icon">₣</span><span class="field-content"><span class="field-label">Budget mensuel max.</span><span class="budget-input"><input id="filter-budget-max" type="number" min="150000" max="500000" step="5000" placeholder="500 000" aria-label="Budget maximum mensuel en FCFA"><span>FCFA</span></span></span></label>
+          <label class="search-field search-field-type"><span class="field-icon">⌂</span><span class="field-content"><span class="field-label">Type de logement</span><select id="filter-type"><option value="">Tous les types</option><option>Chambre</option><option>Studio</option><option>Appartement</option><option>Maison</option></select></span><span class="field-chevron">⌄</span></label>
+          <button class="button button-primary search-submit" type="submit"><span>⌕</span> Rechercher</button>
+          <label class="colocation-toggle"><input id="filter-colocation" type="checkbox"><span class="toggle-box" aria-hidden="true">✓</span><span><strong>Colocation</strong><small>Logements ouverts au partage · budget par personne</small></span><span class="coloc-people" aria-hidden="true">♧</span></label>
+        </form>
+        <div class="colocation-callout"><span class="colocation-callout-icon">♧</span><div><strong>Un studio à deux, c’est plus simple.</strong><p>Repérez les logements ouverts à la colocation et partagez le loyer avec votre futur colocataire.</p></div><button class="button button-outline" id="find-colocation" type="button">Trouver un duo <span>→</span></button></div>
+      </section>
+
+      <section class="listings-section section-wrap" id="logements">
+        <div class="section-heading">
+          <div><span class="eyebrow">DES ADRESSES QUI VOUS RESSEMBLENT</span><h2>Un coup de cœur <span>vous attend.</span></h2><p>Des annonces sélectionnées pour vous aux quatre coins du Bénin.</p></div>
+          <div class="listing-tools"><span class="result-count" id="result-count">30 logements</span><label class="sort-control"><span>Trier par</span><select id="sort-select" aria-label="Trier les logements"><option value="recommended">Recommandés</option><option value="price-asc">Prix croissant</option><option value="price-desc">Prix décroissant</option></select></label></div>
+        </div>
+        <div class="active-filters" id="active-filters"></div>
+        <div class="listing-grid" id="listing-grid"></div>
+        <div class="empty-state hidden" id="empty-state"><span>⌕</span><h3>Aucun logement trouvé</h3><p>Essayez d'élargir votre budget ou de choisir une autre ville.</p><button class="button button-outline" id="reset-filters">Effacer les filtres</button></div>
+        <div class="load-more-wrap"><button class="button button-outline load-more" id="load-more">Découvrir les autres logements <span>↓</span></button><small>30 annonces fictives — prototype de démonstration</small></div>
+      </section>
+
+      <section class="trust-section">
+        <div class="trust-visual">
+          <div class="trust-photo"></div>
+          <div class="trust-stamp"><span>✓</span><strong>La confiance<br>avant tout.</strong><small>Chaque détail compte</small></div>
+          <div class="trust-floating"><span class="check-shield">✓</span><div><strong>Des annonces contrôlées</strong><small>Pour chercher en confiance</small></div></div>
+        </div>
+        <div class="trust-copy"><span class="eyebrow">BIEN PLUS QU'UNE ANNONCE</span><h2>Un logement fiable,<br><span>ça change tout.</span></h2><p>Un badge clair, des informations transparentes et des outils pensés pour vous aider à avancer en confiance.</p>
+          <div class="trust-point"><span>01</span><div><strong>La vérification, en toute transparence</strong><p>« Vérifié » signifie qu'un contrôle a été effectué. « En attente » indique que la vérification est en cours.</p></div></div>
+          <div class="trust-point"><span>02</span><div><strong>Le vrai coût, sans surprise</strong><p>Loyer, caution et avance sont détaillés séparément pour mieux préparer votre budget.</p></div></div>
+          <div class="trust-point"><span>03</span><div><strong>À vous de choisir</strong><p>Enregistrez vos favoris, demandez une visite et comparez les logements qui vous intéressent.</p></div></div>
+          <a class="inline-link" href="#logements">Trouver un logement <span>↗</span></a>
+        </div>
+      </section>
+
+      <section class="map-section section-wrap" id="carte">
+        <div class="map-copy"><span class="eyebrow">LE BÉNIN, TOUT PRÈS</span><h2>Un nouveau départ,<br><span>à votre portée.</span></h2><p>Explorez les logements par ville et repérez les annonces autour des principaux pôles universitaires publics.</p><div class="map-legend"><span><i class="legend-dot"></i> Logement disponible</span><span><i class="legend-dot legend-campus"></i> Université publique</span></div><div class="map-caption">Carte schématique — positions indicatives, non destinées à la navigation.</div></div>
+        <div class="benin-map" id="benin-map" role="img" aria-label="Carte schématique du Bénin montrant les logements et universités publiques"></div>
+      </section>
+
+      <section class="university-section section-wrap" id="universites">
+        <div class="section-heading university-heading"><div><span class="eyebrow">PENSÉ POUR LES ÉTUDIANTS</span><h2>Étudier au Bénin,<br><span>se loger à proximité.</span></h2><p>Des repères autour des principaux établissements publics et de leurs campus.</p></div><a class="inline-link" href="#recherche">Voir les logements <span>↗</span></a></div>
+        <div class="university-grid" id="university-grid"></div>
+        <p class="university-disclaimer">Repères indicatifs sur les établissements et campus publics. Les distances et annonces affichées sont des données fictives de démonstration.</p>
+      </section>
+
+      <section class="cta-section"><div class="cta-orb"></div><span class="eyebrow">VOTRE PROCHAIN CHAPITRE COMMENCE ICI</span><h2>Un chez-vous, et tant<br><span>de possibilités.</span></h2><p>Rejoignez la communauté StudiHome et lancez votre recherche au Bénin.</p><button class="button button-lime" data-auth="signup">Créer mon compte <span>↗</span></button><span class="cta-sparkle">✳</span></section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-main"><div class="footer-brand"><a class="brand brand-light" href="#accueil"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M5 17.4 18 6l13 11.4v12.1a1.5 1.5 0 0 1-1.5 1.5h-23A1.5 1.5 0 0 1 5 29.5z"/><path d="M14 31V20h8v11M3.5 17.8 18 5l14.5 12.8"/></svg></span><span class="brand-name">studi<span>home</span><small>VOTRE CLÉ AU BÉNIN</small></span></a><p>Un logement qui vous ressemble,<br>un nouveau départ en toute confiance.</p><a class="footer-email" href="mailto:bonjour@studihome.bj">bonjour@studihome.bj ↗</a></div>
+        <div class="footer-column"><strong>Découvrir</strong><a href="#logements">Les logements</a><a href="#universites">Vie étudiante</a><a href="#carte">Explorer la carte</a></div>
+        <div class="footer-column"><strong>La communauté</strong><button data-auth="signup" data-role="tenant">Créer un compte locataire</button><button data-auth="signup" data-role="owner">Publier un logement</button><button data-auth="login">Se connecter</button></div>
+        <div class="footer-contact"><strong>Restons en contact</strong><p>Une question ? Notre équipe est là pour vous.</p><a href="tel:+2290197000000">+229 01 97 00 00 00</a><div class="social-links"><a href="#accueil" aria-label="Instagram">ig</a><a href="#accueil" aria-label="Facebook">f</a><a href="#accueil" aria-label="LinkedIn">in</a></div></div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 StudiHome · Prototype de démonstration</span><span>Des annonces fictives, une idée bien réelle.</span><a href="#accueil">Retour en haut ↑</a></div>
+    </footer>
+
+    <dialog class="listing-dialog" id="listing-dialog"><button class="dialog-close" data-close aria-label="Fermer">×</button><div id="listing-detail"></div></dialog>
+    <dialog class="auth-dialog" id="auth-dialog"><button class="dialog-close" data-close aria-label="Fermer">×</button><div class="auth-layout"><div class="auth-aside"><a class="brand brand-light" href="#accueil"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M5 17.4 18 6l13 11.4v12.1a1.5 1.5 0 0 1-1.5 1.5h-23A1.5 1.5 0 0 1 5 29.5z"/><path d="M14 31V20h8v11M3.5 17.8 18 5l14.5 12.8"/></svg></span><span class="brand-name">studi<span>home</span><small>VOTRE CLÉ AU BÉNIN</small></span></a><h2>Un endroit à vous.<br>Une vie à construire.</h2><p>Votre prochaine histoire commence avec la bonne adresse.</p><div class="auth-aside-photo"></div></div><div class="auth-form-wrap"><div class="auth-switch"><button class="auth-tab active" data-mode="signup">Créer un compte</button><button class="auth-tab" data-mode="login">Connexion</button></div><h2 id="auth-title">Bienvenue chez vous.</h2><p class="auth-subtitle" id="auth-subtitle">Créez votre compte StudiHome en quelques instants.</p><form id="auth-form"><div class="role-picker" id="role-picker"><label><input type="radio" name="role" value="tenant" checked><span class="role-card"><b>⌕</b><strong>Locataire</strong><small>Je cherche un logement</small></span></label><label><input type="radio" name="role" value="owner"><span class="role-card"><b>⌂</b><strong>Propriétaire</strong><small>Je propose un logement</small></span></label></div><label class="form-label name-field">Nom complet<input name="name" autocomplete="name" required placeholder="Ex. Aïcha K."></label><label class="form-label">Adresse e-mail<input name="email" type="email" autocomplete="email" required placeholder="vous@exemple.com"></label><label class="form-label">Mot de passe<input name="password" type="password" autocomplete="new-password" required minlength="6" placeholder="6 caractères minimum"></label><p class="auth-notice" id="auth-notice">Prototype : vos informations restent dans cette session de démonstration.</p><button class="button button-primary auth-submit" type="submit">Créer mon compte <span>↗</span></button></form></div></div></dialog>
+    <dialog class="dashboard-dialog" id="dashboard-dialog"><button class="dialog-close" data-close aria-label="Fermer">×</button><div id="dashboard-content"></div></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
