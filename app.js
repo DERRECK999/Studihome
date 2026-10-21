@@ -9,8 +9,21 @@ const imageIds = [
   "photo-1600566753190-17f0baa2a6c3"
 ];
 const neighborhoods = ["Zogbadjè", "Arconville", "Tankpè", "Bidossessi", "Calavi Kpota"];
+const neighborhoodCoordinates = {
+  "Zogbadjè": [6.427, 2.341],
+  "Arconville": [6.429, 2.367],
+  "Tankpè": [6.394, 2.379],
+  "Bidossessi": [6.398, 2.334],
+  "Calavi Kpota": [6.378, 2.359]
+};
+const demoCityCoordinates = { "Abomey-Calavi": [6.45, 2.35], Cotonou: [6.37, 2.43] };
 const sheddingLabels = { none: "absent", rare: "rare", weekly: "1 à 2 fois / semaine", frequent: "3 fois ou plus / semaine", unknown: "à confirmer" };
 const riskLabels = { low: "faible", medium: "modéré", high: "élevé", unknown: "à confirmer" };
+function listingCoordinates(city, district, index = 0) {
+  const [lat, lng] = neighborhoodCoordinates[district] || demoCityCoordinates[city] || demoCityCoordinates["Abomey-Calavi"];
+  const offset = (index % 9) * 0.0007;
+  return { lat: lat + offset, lng: lng + offset };
+}
 const listingSeeds = [
   ["Chambre","Chambre étudiante ventilée",55000,6,8,4,6,true,false,0],
   ["Chambre","Chambre indépendante avec douche",70000,9,11,6,8,true,true,0],
@@ -23,7 +36,7 @@ const listingSeeds = [
 ];
 const inventory = neighborhoods.flatMap((district, neighborhoodIndex) =>
   listingSeeds.map(([type, title, basePrice, walkUac, zemUac, walkEneam, zemEneam, solarPanel, borehole, roommateSlots], seedIndex) => ({
-    city: "Abomey-Calavi", district, type,
+    city: "Abomey-Calavi", district, type, ...listingCoordinates("Abomey-Calavi", district, seedIndex),
     title: `${title} — ${district}`,
     price: basePrice + neighborhoodIndex * 5000,
     bedrooms: type === "Chambre" ? 1 : type === "Appartement" ? 2 : 1,
@@ -54,6 +67,7 @@ const demoListings = inventory.map((item, index) => {
   const { city, district, type, title, price, bedrooms, bathrooms, verified, roommateSlots, walkUac, zemUac, walkEneam, zemEneam, solarPanel, borehole, waterAvailable, electricityAvailable, sheddingFrequency, floodRisk, leakRisk } = item;
   return {
     id: index + 1, city, district, type, title, price, bedrooms, bathrooms, verified,
+    lat: item.lat, lng: item.lng,
     image: `https://images.unsplash.com/${imageIds[index % imageIds.length]}?auto=format&fit=crop&w=900&q=78`,
     description: `${descriptions[index % descriptions.length]} ${type === "Chambre" ? "Une solution pratique pour un étudiant." : type === "Appartement" ? "Plusieurs pièces, adaptées au partage." : "Un espace indépendant avec coin de vie."} UAC : ${walkUac + Math.floor(index / listingSeeds.length) * 2} min à pied ; ENEAM : ${walkEneam + Math.floor(index / listingSeeds.length) * 2} min à pied.`,
     deposit: price * 2, advance: price * 3, views: 84 + index * 17,
@@ -67,7 +81,13 @@ const demoListings = inventory.map((item, index) => {
 });
 const ownerListings = JSON.parse(localStorage.getItem("studihome-owner-listings") || "[]");
 let listings = [...ownerListings, ...demoListings]
-  .map(listing => ({ ...listing, ...(moderation[String(listing.id)] || {}) }))
+  .map((listing, index) => ({
+    ...listing,
+    ...(!Number.isFinite(listing.lat) || !Number.isFinite(listing.lng)
+      ? listingCoordinates(listing.city, listing.district, index)
+      : {}),
+    ...(moderation[String(listing.id)] || {})
+  }))
   .filter(listing => listing.city === "Abomey-Calavi");
 const grid = document.querySelector("#listing-grid");
 const money = amount => new Intl.NumberFormat("fr-FR").format(amount);
@@ -83,6 +103,8 @@ let pendingColocationListingId = null;
 let pendingVisitListingId = null;
 let pendingPaymentListingId = null;
 let toastTimer;
+let listingsMap = null;
+let listingMarkersLayer = null;
 
 function toast(message) {
   const element = document.querySelector("#toast");
@@ -199,6 +221,7 @@ function renderListings() {
   if (document.querySelector("#filter-low-flood-risk").checked) tags.push("Faible risque d’inondation");
   if (document.querySelector("#filter-low-leak-risk").checked) tags.push("Pas de fuite signalée");
   document.querySelector("#active-filters").innerHTML = tags.map(tag => `<span class="filter-tag">${tag}</span>`).join("");
+  renderListingMarkers();
   observeReveals();
 }
 
@@ -222,18 +245,36 @@ function renderUniversities() {
 
 function renderMap() {
   const map = document.querySelector("#benin-map");
-  const districts = [
-    ["Zogbadjè",92,92],["Arconville",265,104],["Tankpè",315,236],
-    ["Bidossessi",125,280],["Calavi Kpota",250,330]
-  ];
-  map.innerHTML = `<svg viewBox="0 0 420 410" role="presentation" aria-hidden="true">
-    <path class="map-land" d="M76 105 130 46 236 42 341 89 372 177 339 291 274 359 146 348 55 279 34 184z"/>
-    <path class="map-road" d="M75 170 153 155 230 177 315 149M105 262 179 217 250 233 318 207M152 66 176 155 179 217 224 322"/>
-    <text x="128" y="28" fill="#536d42" font-size="10" font-weight="700" font-family="DM Sans">ABOMEY-CALAVI · ZONE ÉTUDIANTE</text>
-    ${districts.map(([name,x,y]) => `<g class="map-pin" tabindex="0" role="button" aria-label="Voir les annonces à ${name}" data-map-district="${name}"><circle class="pin-halo" cx="${x}" cy="${y}" r="20"/><circle cx="${x}" cy="${y}" r="7"/><text x="${x+13}" y="${y+4}">${name}</text></g>`).join("")}
-    <g class="map-pin campus"><circle class="pin-halo" cx="195" cy="163" r="22"/><circle cx="195" cy="163" r="9"/><text x="208" y="157">UAC</text></g>
-    <g class="map-pin campus"><circle class="pin-halo" cx="224" cy="190" r="18"/><circle cx="224" cy="190" r="7"/><text x="237" y="194">ENEAM</text></g>
-  </svg>`;
+  if (!window.L) {
+    map.innerHTML = '<p class="map-error">La carte nécessite une connexion Internet. <a href="https://www.openstreetmap.org/#map=7/9.3/2.3" target="_blank" rel="noreferrer">Ouvrir OpenStreetMap</a></p>';
+    return;
+  }
+  const beninBounds = window.L.latLngBounds([6.2, 0.7], [12.5, 3.9]);
+  listingsMap = window.L.map(map, {
+    scrollWheelZoom: false,
+    maxBounds: beninBounds,
+    maxBoundsViscosity: 1,
+    minZoom: 7,
+    maxZoom: 18
+  }).setView([9.3, 2.3], 7);
+  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors'
+  }).addTo(listingsMap);
+  listingMarkersLayer = window.L.layerGroup().addTo(listingsMap);
+  renderListingMarkers();
+}
+
+function renderListingMarkers() {
+  if (!listingsMap || !listingMarkersLayer) return;
+  listingMarkersLayer.clearLayers();
+  filteredListings().forEach(listing => {
+    if (!Number.isFinite(listing.lat) || !Number.isFinite(listing.lng)) return;
+    const popup = `<strong>${escapeHtml(listing.title)}</strong><br>${money(listing.price)} FCFA / mois<br><button class="map-listing-button" type="button" data-map-listing="${escapeHtml(listing.id)}">Voir l'annonce</button>`;
+    window.L.marker([listing.lat, listing.lng], {
+      icon: window.L.divIcon({ className: "map-marker listing-marker", html: '<span></span>', iconSize: [20, 20], iconAnchor: [10, 10] })
+    }).bindPopup(popup).addTo(listingMarkersLayer);
+  });
 }
 
 function showListing(id) {
@@ -656,13 +697,8 @@ document.querySelector("#university-grid").addEventListener("click", event => {
   document.querySelector("#logements").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 document.querySelector("#benin-map").addEventListener("click", event => {
-  const pin = event.target.closest("[data-map-district]");
-  if (!pin) return;
-  document.querySelector("#filter-district").value = pin.dataset.mapDistrict;
-  visibleCount = 30;
-  document.querySelectorAll(".city-pill").forEach(pill => pill.classList.toggle("selected", pill.dataset.district === pin.dataset.mapDistrict));
-  renderListings();
-  document.querySelector("#logements").scrollIntoView({ behavior: "smooth", block: "start" });
+  const button = event.target.closest("[data-map-listing]");
+  if (button) showListing(button.dataset.mapListing);
 });
 document.querySelectorAll("[data-admin]").forEach(button => button.addEventListener("click", openAdminDashboard));
 document.querySelectorAll("[data-auth]").forEach(button => button.addEventListener("click", () => openAuth(button.dataset.auth, button.dataset.role || "tenant")));
@@ -732,6 +768,7 @@ document.querySelector("#dashboard-content").addEventListener("submit", event =>
   const listing = {
     id: Date.now(), title: String(form.get("title")).trim(), city: "Abomey-Calavi",
     district: String(form.get("district")).trim(), type: String(form.get("type")), price,
+    ...listingCoordinates("Abomey-Calavi", String(form.get("district")).trim(), listings.length),
     bedrooms: 1, bathrooms: 1, verified: false, demo: true, ownerEmail: profile.email,
     ownerName: profile.name, ownerPhone: String(form.get("ownerPhone")).trim(),
     image: `https://images.unsplash.com/${imageIds[(listings.length + 3) % imageIds.length]}?auto=format&fit=crop&w=900&q=78`,

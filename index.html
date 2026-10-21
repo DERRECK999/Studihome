@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
     <script src="app.js" defer></script>
   </head>
   <body>
@@ -104,8 +106,8 @@
       </section>
 
       <section class="map-section section-wrap" id="carte">
-        <div class="map-copy"><span class="eyebrow">VOTRE QUARTIER ÉTUDIANT</span><h2>À pied ou en zem,<br><span>les cours sont proches.</span></h2><p>Comparez le temps de trajet estimé depuis chaque annonce vers l'UAC ou l'ENEAM.</p><div class="map-legend"><span><i class="legend-dot"></i> Quartier couvert au lancement</span><span><i class="legend-dot legend-campus"></i> Campus UAC / ENEAM</span></div><div class="map-caption">Carte et trajets schématiques, donnés fictifs à confirmer avant toute visite.</div></div>
-        <div class="benin-map local-campus-map" id="benin-map" role="img" aria-label="Carte schématique des quartiers d'Abomey-Calavi près de l'UAC et l'ENEAM"></div>
+        <div class="map-copy"><span class="eyebrow">ANNONCES AU BÉNIN</span><h2>Repérez un logement<br><span>partout au Bénin.</span></h2><p>Chaque marqueur indique une annonce. Zoomez pour explorer les logements autour d'Abomey-Calavi et des campus.</p><div class="map-legend"><span><i class="legend-dot"></i> Logement disponible</span></div><div class="map-caption">Carte © OpenStreetMap. Coordonnées de démonstration à confirmer avant toute visite.</div></div>
+        <div class="benin-map local-campus-map" id="benin-map" aria-label="Carte interactive OpenStreetMap du Bénin affichant les logements proposés"></div>
       </section>
 
       <section class="university-section section-wrap" id="universites">
