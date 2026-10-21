@@ -22,7 +22,7 @@ const listingSeeds = [
   ["Studio","Studio avec terrasse privée",190000,20,22,13,15,true,false,0]
 ];
 const inventory = neighborhoods.flatMap((district, neighborhoodIndex) =>
-  listingSeeds.map(([type, title, basePrice, walkUac, zemUac, walkEneam, zemEneam, waterIncluded, electricityIncluded, roommateSlots], seedIndex) => ({
+  listingSeeds.map(([type, title, basePrice, walkUac, zemUac, walkEneam, zemEneam, solarPanel, borehole, roommateSlots], seedIndex) => ({
     city: "Abomey-Calavi", district, type,
     title: `${title} — ${district}`,
     price: basePrice + neighborhoodIndex * 5000,
@@ -33,8 +33,8 @@ const inventory = neighborhoods.flatMap((district, neighborhoodIndex) =>
     zemUac: zemUac + Math.floor(neighborhoodIndex / 2),
     walkEneam: walkEneam + neighborhoodIndex * 2,
     zemEneam: zemEneam + Math.floor(neighborhoodIndex / 2),
-    waterIncluded: (waterIncluded + neighborhoodIndex) % 2 === 0,
-    electricityIncluded: electricityIncluded && neighborhoodIndex % 2 === 0,
+    solarPanel: Boolean(solarPanel && (seedIndex + neighborhoodIndex) % 2 === 0),
+    borehole: Boolean(borehole && (seedIndex + neighborhoodIndex) % 3 !== 0),
     waterAvailable: (seedIndex + neighborhoodIndex) % 7 !== 0,
     electricityAvailable: (seedIndex + neighborhoodIndex) % 9 !== 0,
     sheddingFrequency: ["rare", "weekly", "frequent", "weekly", "rare"][(seedIndex + neighborhoodIndex) % 5],
@@ -51,15 +51,15 @@ const descriptions = [
 ];
 const moderation = JSON.parse(localStorage.getItem("studihome-moderation") || "{}");
 const demoListings = inventory.map((item, index) => {
-  const { city, district, type, title, price, bedrooms, bathrooms, verified, roommateSlots, walkUac, zemUac, walkEneam, zemEneam, waterIncluded, electricityIncluded, waterAvailable, electricityAvailable, sheddingFrequency, floodRisk, leakRisk } = item;
+  const { city, district, type, title, price, bedrooms, bathrooms, verified, roommateSlots, walkUac, zemUac, walkEneam, zemEneam, solarPanel, borehole, waterAvailable, electricityAvailable, sheddingFrequency, floodRisk, leakRisk } = item;
   return {
     id: index + 1, city, district, type, title, price, bedrooms, bathrooms, verified,
     image: `https://images.unsplash.com/${imageIds[index % imageIds.length]}?auto=format&fit=crop&w=900&q=78`,
-    description: `${descriptions[index % descriptions.length]} ${type === "Chambre" ? "Une solution pratique pour un étudiant." : type === "Appartement" ? "Plusieurs pièces, adaptées au partage." : "Un espace indépendant avec coin de vie."} UAC : ${walkUac + Math.floor(index / listingSeeds.length) * 2} min à pied ; ENEAM : ${walkEneam + Math.floor(index / listingSeeds.length) * 2} min à pied. ${waterIncluded ? "Eau comprise dans le loyer." : "Eau à la charge du locataire."} ${electricityIncluded ? "Électricité comprise." : "Électricité à prévoir."}`,
+    description: `${descriptions[index % descriptions.length]} ${type === "Chambre" ? "Une solution pratique pour un étudiant." : type === "Appartement" ? "Plusieurs pièces, adaptées au partage." : "Un espace indépendant avec coin de vie."} UAC : ${walkUac + Math.floor(index / listingSeeds.length) * 2} min à pied ; ENEAM : ${walkEneam + Math.floor(index / listingSeeds.length) * 2} min à pied.`,
     deposit: price * 2, advance: price * 3, views: 84 + index * 17,
     area: 18 + (index % 6) * 8, available: true, demo: true, roommateSlots,
     distances: { uac: { walk: walkUac, zem: zemUac }, eneam: { walk: walkEneam, zem: zemEneam } },
-    waterIncluded, electricityIncluded, waterAvailable, electricityAvailable, sheddingFrequency, floodRisk, leakRisk,
+    solarPanel, borehole, waterAvailable, electricityAvailable, sheddingFrequency, floodRisk, leakRisk,
     ownerName: ["Résidence Les Palmiers", "Maison Calavi", "Hôte StudiHome"][index % 3],
     ownerPhone: "",
     rating: null, reviewCount: 0
@@ -113,8 +113,8 @@ function filteredListings() {
   const transport = document.querySelector("#filter-transport").value;
   const maxDistanceValue = document.querySelector("#filter-distance").value;
   const maxDistance = maxDistanceValue ? Number(maxDistanceValue) : Infinity;
-  const includeWater = document.querySelector("#filter-water").checked;
-  const includeElectricity = document.querySelector("#filter-electricity").checked;
+  const solarPanel = document.querySelector("#filter-solar-panel").checked;
+  const borehole = document.querySelector("#filter-borehole").checked;
   const waterAvailable = document.querySelector("#filter-water-available").checked;
   const electricityAvailable = document.querySelector("#filter-electricity-available").checked;
   const lowShedding = document.querySelector("#filter-low-shedding").checked;
@@ -132,8 +132,8 @@ function filteredListings() {
     listing.city === "Abomey-Calavi" &&
     (listing.active !== false) &&
     (listing.distances?.[campus]?.[transport] ?? Infinity) <= maxDistance &&
-    (!includeWater || listing.waterIncluded) &&
-    (!includeElectricity || listing.electricityIncluded) &&
+    (!solarPanel || listing.solarPanel === true) &&
+    (!borehole || listing.borehole === true) &&
     (!waterAvailable || listing.waterAvailable === true) &&
     (!electricityAvailable || listing.electricityAvailable === true) &&
     (!lowShedding || ["none", "rare"].includes(listing.sheddingFrequency)) &&
@@ -161,13 +161,15 @@ function cardMarkup(listing) {
     ? `★ ${(publishedReviews.reduce((sum, review) => sum + review.rating, 0) / publishedReviews.length).toFixed(1)} · ${publishedReviews.length} avis`
     : "Pas encore d'avis";
   const utilities = [
+    listing.solarPanel === true ? "Panneau solaire" : "",
+    listing.borehole === true ? "Forage" : "",
     listing.waterAvailable === true ? "Eau disponible" : "",
     listing.electricityAvailable === true ? "Courant disponible" : "",
     listing.sheddingFrequency ? `Délestage ${sheddingLabels[listing.sheddingFrequency] || "à confirmer"}` : ""
   ].filter(Boolean);
   return `<article class="listing-card" data-listing="${listing.id}" tabindex="0" aria-label="Voir ${escapeHtml(listing.title)}">
     <div class="card-photo"><img src="${listing.image}" alt="${escapeHtml(listing.title)}, ${escapeHtml(listing.district)}" loading="lazy"><div class="card-badges">${status}${listing.roommateSlots ? '<span class="badge colocation-badge">Coloc possible</span>' : ""}<span class="badge demo">Démo</span></div><button class="favorite-btn ${favorites.has(listing.id) ? "is-favorite" : ""}" data-favorite="${listing.id}" aria-label="${favorites.has(listing.id) ? "Retirer des favoris" : "Ajouter aux favoris"}" aria-pressed="${favorites.has(listing.id)}">${favorites.has(listing.id) ? "♥" : "♡"}</button></div>
-    <div class="card-content"><div class="card-kicker"><span>${escapeHtml(listing.type)}</span><span>${rating}</span></div><h3>${escapeHtml(listing.title)}</h3><div class="card-location"><span>⌖</span>${escapeHtml(listing.district)}, Abomey-Calavi</div><div class="card-specs"><span><b>▧</b> ${listing.bedrooms} pièce${listing.bedrooms > 1 ? "s" : ""}</span><span><b>↔</b> ${listing.area} m²</span><span><b>◷</b> ${distance} min à pied ${campusName}</span></div><div class="card-amenities">${listing.waterIncluded ? "<span>Eau incluse</span>" : ""}${listing.electricityIncluded ? "<span>Électricité incluse</span>" : ""}${utilities.map(item => `<span>${escapeHtml(item)}</span>`).join("")}</div><div class="card-foot"><div><div class="card-price">${money(listing.price)}<small>FCFA / mois</small></div>${listing.roommateSlots ? `<div class="card-fees coloc-price">≈ ${money(Math.ceil(listing.price / (listing.roommateSlots + 1)))} FCFA / personne à ${listing.roommateSlots + 1}</div>` : `<div class="card-fees">Caution : ${money(listing.deposit)} FCFA · Annonce fictive</div>`}</div><span class="card-arrow">↗</span></div></div>
+    <div class="card-content"><div class="card-kicker"><span>${escapeHtml(listing.type)}</span><span>${rating}</span></div><h3>${escapeHtml(listing.title)}</h3><div class="card-location"><span>⌖</span>${escapeHtml(listing.district)}, Abomey-Calavi</div><div class="card-specs"><span><b>▧</b> ${listing.bedrooms} pièce${listing.bedrooms > 1 ? "s" : ""}</span><span><b>↔</b> ${listing.area} m²</span><span><b>◷</b> ${distance} min à pied ${campusName}</span></div><div class="card-amenities">${utilities.map(item => `<span>${escapeHtml(item)}</span>`).join("")}</div><div class="card-foot"><div><div class="card-price">${money(listing.price)}<small>FCFA / mois</small></div>${listing.roommateSlots ? `<div class="card-fees coloc-price">≈ ${money(Math.ceil(listing.price / (listing.roommateSlots + 1)))} FCFA / personne à ${listing.roommateSlots + 1}</div>` : `<div class="card-fees">Caution : ${money(listing.deposit)} FCFA · Annonce fictive</div>`}</div><span class="card-arrow">↗</span></div></div>
   </article>`;
 }
 
@@ -189,8 +191,8 @@ function renderListings() {
   if (minBudget) tags.push(`Dès ${money(Number(minBudget))} FCFA / mois`);
   if (maxBudget) tags.push(`Jusqu'à ${money(Number(maxBudget))} FCFA / mois`);
   if (document.querySelector("#filter-colocation").checked) tags.push("Colocation · budget par personne");
-  if (document.querySelector("#filter-water").checked) tags.push("Eau incluse");
-  if (document.querySelector("#filter-electricity").checked) tags.push("Électricité incluse");
+  if (document.querySelector("#filter-solar-panel").checked) tags.push("Panneau solaire");
+  if (document.querySelector("#filter-borehole").checked) tags.push("Forage");
   if (document.querySelector("#filter-water-available").checked) tags.push("Eau disponible");
   if (document.querySelector("#filter-electricity-available").checked) tags.push("Courant disponible");
   if (document.querySelector("#filter-low-shedding").checked) tags.push("Délestage rare");
@@ -271,8 +273,9 @@ function showListing(id) {
       <p class="detail-description">${escapeHtml(listing.description)} Logement de démonstration. Photos, prix et informations indicatifs à confirmer avant toute visite.</p>
       <div class="detail-specs"><span>${escapeHtml(listing.type)}</span><span>${listing.bedrooms} pièce${listing.bedrooms > 1 ? "s" : ""}</span><span>${listing.area} m²</span><span>${listing.bathrooms} salle${listing.bathrooms > 1 ? "s" : ""} d'eau</span><span>${listing.views} consultations démo</span></div>
       <div class="detail-specs campus-distance"><span>UAC : ${listing.distances?.uac?.walk ?? "—"} min à pied · ${listing.distances?.uac?.zem ?? "—"} min en zem</span><span>ENEAM : ${listing.distances?.eneam?.walk ?? "—"} min à pied · ${listing.distances?.eneam?.zem ?? "—"} min en zem</span></div>
-      <div class="detail-specs"><span>${listing.waterIncluded ? "✓ Eau incluse" : "Eau non incluse"}</span><span>${listing.electricityIncluded ? "✓ Électricité incluse" : "Électricité non incluse"}</span>${listing.roommateSlots ? `<span>Colocation · ${listing.roommateSlots} place disponible</span>` : ""}</div>
       <section class="condition-details"><h3>Équipements et état du logement</h3><dl>
+        <div><dt>Panneau solaire</dt><dd>${listing.solarPanel === true ? "Présent" : listing.solarPanel === false ? "Absent" : "À confirmer"}</dd></div>
+        <div><dt>Forage</dt><dd>${listing.borehole === true ? "Présent" : listing.borehole === false ? "Absent" : "À confirmer"}</dd></div>
         <div><dt>Disponibilité de l’eau</dt><dd>${waterAvailability}</dd></div>
         <div><dt>Disponibilité du courant</dt><dd>${electricityAvailability}</dd></div>
         <div><dt>Fréquence du délestage</dt><dd>${escapeHtml(sheddingLabels[listing.sheddingFrequency] || sheddingLabels.unknown)}</dd></div>
@@ -453,8 +456,8 @@ function openDashboard() {
         <div class="property-row"><label class="form-label">Loyer mensuel (FCFA)<input name="price" type="number" min="1000" max="5000000" step="500" required placeholder="Ex. 120000"></label><label class="form-label">Téléphone du propriétaire<input name="ownerPhone" type="tel" required maxlength="24" placeholder="+229 01 …"></label></div>
         <div class="property-row"><label class="form-label">UAC · minutes à pied<input name="walkUac" type="number" min="1" max="90" value="10" required></label><label class="form-label">UAC · minutes en zem<input name="zemUac" type="number" min="1" max="60" value="5" required></label></div>
         <div class="property-row"><label class="form-label">ENEAM · minutes à pied<input name="walkEneam" type="number" min="1" max="90" value="12" required></label><label class="form-label">ENEAM · minutes en zem<input name="zemEneam" type="number" min="1" max="60" value="7" required></label></div>
-        <label class="owner-colocation-check"><input name="waterIncluded" type="checkbox"><span>Eau comprise dans le loyer</span></label>
-        <label class="owner-colocation-check"><input name="electricityIncluded" type="checkbox"><span>Électricité comprise dans le loyer</span></label>
+        <label class="owner-colocation-check"><input name="solarPanel" type="checkbox"><span>Présence d’un panneau solaire</span></label>
+        <label class="owner-colocation-check"><input name="borehole" type="checkbox"><span>Présence d’un forage</span></label>
         <div class="property-row"><label class="form-label">Disponibilité de l’eau<select name="waterAvailable" required><option value="">À préciser</option><option value="true">Disponible</option><option value="false">Indisponible ou irrégulière</option></select></label><label class="form-label">Disponibilité du courant<select name="electricityAvailable" required><option value="">À préciser</option><option value="true">Disponible</option><option value="false">Indisponible ou irrégulière</option></select></label></div>
         <div class="property-row"><label class="form-label">Fréquence du délestage<select name="sheddingFrequency" required><option value="">À préciser</option><option value="none">Absent</option><option value="rare">Rare</option><option value="weekly">1 à 2 fois / semaine</option><option value="frequent">3 fois ou plus / semaine</option></select></label><label class="form-label">Risque d’inondation<select name="floodRisk" required><option value="">À préciser</option><option value="low">Faible</option><option value="medium">Modéré</option><option value="high">Élevé</option></select></label></div>
         <label class="form-label">Risque de fuite d’eau<select name="leakRisk" required><option value="">À préciser</option><option value="low">Faible / aucune fuite connue</option><option value="medium">Modéré / antécédent signalé</option><option value="high">Élevé / fuite à traiter</option></select></label>
@@ -736,8 +739,8 @@ document.querySelector("#dashboard-content").addEventListener("submit", event =>
     deposit: price * 2, advance: price * 3, views: 0, area: 24, available: true,
     roommateSlots: form.get("colocation") ? 1 : 0,
     distances: { uac: { walk: walkUac, zem: zemUac }, eneam: { walk: walkEneam, zem: zemEneam } },
-    waterIncluded: Boolean(form.get("waterIncluded")),
-    electricityIncluded: Boolean(form.get("electricityIncluded")),
+    solarPanel: Boolean(form.get("solarPanel")),
+    borehole: Boolean(form.get("borehole")),
     waterAvailable: form.get("waterAvailable") === "true",
     electricityAvailable: form.get("electricityAvailable") === "true",
     sheddingFrequency: String(form.get("sheddingFrequency")),
