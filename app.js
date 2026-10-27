@@ -123,10 +123,11 @@ function initializeCities() {
     option.textContent = district;
     districtSelect.append(option);
   });
-  document.querySelector("#city-scroller").innerHTML = districts.map(district => {
+  const cityPills = districts.map(district => {
     const count = listings.filter(listing => listing.district === district).length;
     return `<button class="city-pill" data-district="${escapeHtml(district)}"><span>⌖</span>${escapeHtml(district)}<span class="city-count">${String(count).padStart(2, "0")}</span></button>`;
   }).join("");
+  document.querySelector("#city-scroller").innerHTML = `<div class="city-track"><div class="city-track-group">${cityPills}</div><div class="city-track-group" aria-hidden="true">${cityPills.replaceAll('<button class="city-pill"', '<button class="city-pill" tabindex="-1"')}</div></div>`;
 }
 
 function filteredListings() {
@@ -644,7 +645,12 @@ document.querySelector("#city-scroller").addEventListener("click", event => {
   renderListings();
   document.querySelector("#logements").scrollIntoView({ behavior: "smooth", block: "start" });
 });
-document.querySelector("#city-next").addEventListener("click", () => document.querySelector("#city-scroller").scrollBy({ left: 240, behavior: "smooth" }));
+document.querySelector("#city-next").addEventListener("click", event => {
+  const scroller = document.querySelector("#city-scroller");
+  const paused = scroller.classList.toggle("is-paused");
+  event.currentTarget.setAttribute("aria-label", paused ? "Reprendre le défilement des quartiers" : "Mettre en pause le défilement des quartiers");
+  event.currentTarget.textContent = paused ? "▶" : "Ⅱ";
+});
 document.querySelector("#load-more").addEventListener("click", () => { visibleCount += 9; renderListings(); });
 document.querySelector("#reset-filters").addEventListener("click", () => {
   document.querySelector("#search-form").reset();
