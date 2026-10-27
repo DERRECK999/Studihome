@@ -1,17 +1,18 @@
 :root {
-  --green: #173d32;
-  --green-deep: #103329;
-  --green-mid: #245644;
-  --lime: #d6f06a;
-  --lime-soft: #edf6cf;
-  --gold: #d7ad5a;
-  --paper: #f7f8f4;
+  --green: #0b1f3a;
+  --green-deep: #07152a;
+  --green-mid: #17365c;
+  --lime: #f4b942;
+  --lime-soft: #fff3d6;
+  --gold: #d99a16;
+  --paper: #f5f7fb;
   --white: #fff;
-  --ink: #1e2d28;
-  --muted: #78817b;
-  --line: #e8ebe5;
+  --ink: #15243a;
+  --muted: #66758a;
+  --line: #e3e8f0;
   --card: #fff;
-  --shadow: 0 18px 54px rgba(24, 48, 37, .09);
+  --shadow: 0 18px 54px rgba(11, 31, 58, .1);
+  --amber-ink: #986000;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -139,7 +140,7 @@ h1, h2, h3, p { margin-top: 0; }
 @media (max-width: 650px) { html { scroll-padding-top: 72px; }.site-header { height: 68px; }.brand-name { font-size: 21px; }.mobile-menu { display: flex; flex-direction: column; gap: 5px; padding: 9px; border: 0; background: transparent; }.mobile-menu span { width: 21px; height: 2px; background: var(--green); }.main-nav { position: absolute; top: 68px; left: 0; right: 0; display: none; flex-direction: column; align-items: stretch; gap: 0; padding: 12px 6% 20px; background: var(--paper); border-bottom: 1px solid var(--line); box-shadow: 0 12px 20px #152c1a12; }.main-nav.open { display: flex; }.main-nav .nav-link { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 12px; }.main-nav .theme-toggle { align-self: flex-start; padding: 14px 0; }.theme-label { display: inline; }.main-nav .button { margin-top: 5px; }.hero { min-height: 568px; align-items: flex-start; }.hero-image { background-position: 62% center; }.hero-overlay { background: linear-gradient(90deg,rgba(13,32,25,.9),rgba(17,42,31,.53)),linear-gradient(0deg,rgba(11,30,24,.4),transparent); }.hero-content { width: 88%; padding-top: 83px; }.hero h1 { font-size: clamp(43px,11vw,60px); letter-spacing: -2.6px; }.hero-content > p { max-width: 360px; font-size: 12px; }.hero-actions { align-items: flex-start; flex-direction: column; gap: 17px; }.hero-trust { margin-top: 28px; }.hero-note,.scroll-cue { display: none; }.city-strip { min-height: 79px; padding: 0 6%; gap: 10px; }.city-strip-label { flex-basis: 90px; }.city-pill { padding: 9px 11px; }.city-next { flex: 0 0 28px; }.search-section,.section-wrap { width: 88%; }.search-section { padding-top: 53px; padding-bottom: 36px; }.search-panel { grid-template-columns: 1fr 1fr; gap: 5px; padding: 11px; }.search-field { height: 54px; padding: 0 8px; }.search-field:nth-child(2) { border-right: 0; }.search-field-type { border-top: 1px solid var(--line); }.search-submit { min-height: 48px; margin: 4px 0 0; }.search-intro h2 { font-size: 28px; }.listings-section { padding-top: 34px; padding-bottom: 70px; }.section-heading { align-items: flex-start; flex-direction: column; gap: 16px; }.section-heading h2 { font-size: 29px; }.listing-tools { width: 100%; justify-content: space-between; }.listing-grid { grid-template-columns: 1fr; gap: 17px; }.card-photo { height: 225px; }.card-content { padding: 14px; }.card-content h3 { font-size: 16px; }.card-price { font-size: 18px; }.trust-section { grid-template-columns: 1fr; gap: 36px; padding: 58px 8% 62px; }.trust-visual { height: 320px; }.trust-photo { right: 8%; }.trust-stamp { width: 107px; height: 107px; left: -12px; }.trust-floating { right: -4px; }.trust-copy h2 { font-size: 31px; }.map-section { grid-template-columns: 1fr; gap: 12px; padding-top: 68px; padding-bottom: 63px; }.benin-map { height: 500px; }.university-section { padding-bottom: 70px; }.university-heading { gap: 13px; }.university-heading h2 { font-size: 29px; }.university-grid { grid-template-columns: 1fr 1fr; gap: 9px; }.university-card { padding: 15px 12px; }.university-card h3 { font-size: 10px; }.cta-section { min-height: 320px; }.cta-section h2 { font-size: 32px; }.cta-sparkle { right: 9%; top: 19%; }.footer-main { width: 88%; grid-template-columns: 1fr 1fr; gap: 32px 17px; padding: 43px 0 35px; }.footer-brand { grid-column: 1/3; }.footer-contact { grid-column: 1/3; }.footer-bottom { flex-wrap: wrap; gap: 8px 20px; justify-content: flex-start; padding: 14px 6%; }.footer-bottom span:nth-child(2) { display: none; }.auth-layout { grid-template-columns: 1fr; }.auth-aside { min-height: 135px; padding: 19px; }.auth-aside h2 { display: none; }.auth-aside > p { margin: 17px 0 0; }.auth-aside-photo { opacity: .16; }.auth-form-wrap { padding: 24px 22px; }.auth-form-wrap h2 { font-size: 21px; }.listing-dialog,.auth-dialog { max-height: 91vh; }.detail-image { height: 195px; }.detail-body { padding: 20px 19px; }.detail-body h2 { font-size: 20px; }.detail-costs { gap: 5px; }.detail-costs div { padding: 9px 7px; }.detail-costs small { font-size: 7px; }.detail-costs strong { font-size: 9px; } }
 @media (prefers-reduced-motion: no-preference) and (min-width: 651px) { .hero-content { animation: hero-enter .8s ease-out both; } }
 @keyframes hero-enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-body.dark { --paper: #17231d; --white: #1d2b23; --card: #1e2c24; --ink: #e7eee7; --muted: #a3afa4; --line: #34453a; --green: #d5e99a; --green-deep: #1b2c21; --green-mid: #b9d37a; --lime: #d6f06a; --lime-soft: #35432c; --shadow: 0 18px 54px rgba(0,0,0,.23); color-scheme: dark; }
+body.dark { --paper: #07152a; --white: #0b1f3a; --card: #102744; --ink: #f3f6fb; --muted: #b2bfd1; --line: #2b3f5b; --green: #f4b942; --green-deep: #07152a; --green-mid: #ffd166; --lime: #f4b942; --lime-soft: #34445c; --gold: #f4b942; --amber-ink: #ffd166; --shadow: 0 18px 54px rgba(0,0,0,.35); color-scheme: dark; }
 body.dark .site-header,body.dark .city-strip,body.dark .search-panel,body.dark .listing-card,body.dark .university-card { background: var(--card); }
 body.dark .nav-link,body.dark .button-quiet,body.dark .theme-toggle { color: #c2cdc4; }
 body.dark .trust-section { background: #202e25; } body.dark .trust-copy > .eyebrow { color: #d6e99b; } body.dark .trust-copy h2 span { color: #d6f06a; } body.dark .trust-copy > p,body.dark .trust-point p { color: #b9c4ba; } body.dark .trust-point > span { color: #d0e392; } body.dark .trust-point strong { color: #f0f4ed; } body.dark .trust-floating { background: #233329; } body.dark .trust-floating strong { color: #e7eee7; } body.dark .trust-floating small { color: #c1cdc2; }
@@ -177,3 +178,75 @@ body.dark .condition-details { background: #202d25; } body.dark .condition-detai
 body.dark .colocation-callout,body.dark .colocation-detail { background: #29372b; border-color: #3b4a34; } body.dark .colocation-callout strong,body.dark .colocation-detail > strong,body.dark .colocation-detail b { color: #d6e6a2; } body.dark .colocation-callout p,body.dark .colocation-detail p { color: #b0bcab; } body.dark .colocation-callout-icon { background: #35462d; }
 @media (min-width: 651px) and (max-width: 900px) { .search-panel { grid-template-columns: repeat(4,minmax(0,1fr)); } }
 @media (max-width: 650px) { .colocation-toggle { margin: 8px 0 2px; }.colocation-callout { gap: 10px; margin-top: -3px; padding: 12px; }.colocation-callout-icon { flex-basis: 30px; height: 30px; }.colocation-callout strong { font-size: 9px; }.colocation-callout p { font-size: 8px; }.colocation-callout .button { gap: 5px; padding: 9px 8px; font-size: 8px; } }
+
+.site-header { background: #0b1f3a; border-bottom-color: #ffffff20; }
+.site-header .brand { color: #fff; }
+.site-header .brand-mark { background: #f4b942; color: #0b1f3a; }
+.site-header .brand-name > span,.brand-light .brand-name > span { color: #f4b942; }
+.site-header .brand-name small { color: #c3cedd; }
+.site-header .nav-link,.site-header .theme-toggle { color: #e8edf5; }
+.site-header .nav-link:hover,.site-header .nav-link.active { color: #f4b942; }
+.mobile-menu span { background: #f4b942; }
+.hero { background-color: #0b1f3a; }
+.hero-overlay { background: linear-gradient(90deg,rgba(7,21,42,.94) 0%,rgba(11,31,58,.79) 43%,rgba(11,31,58,.14) 100%),linear-gradient(0deg,rgba(7,21,42,.2),transparent 55%); }
+.hero-eyebrow,.hero-text-link span,.hero-note > span,.scroll-cue span { color: #f4b942; }
+.hero h1 span { color: #f4b942; }
+.button-primary { background: #0b1f3a; color: #fff; }
+.button-primary:hover { background: #17365c; }
+.button-lime { background: #f4b942; color: #0b1f3a; }
+.button-lime:hover { background: #ffd166; }
+.brand-name > span,.search-intro h2 span,.section-heading h2 span,.trust-copy h2 span,.map-copy h2 span,.university-heading h2 span,.owner-benefits h2 span { color: #986000; }
+.eyebrow,.tiny-icon,.field-icon,.city-pill:hover,.city-pill.selected,.university-card button,.inline-link span,.trust-point > span,.owner-benefit-grid article > strong { color: #986000; }
+.eyebrow-dot { background: #f4b942; box-shadow: 0 0 0 4px #f4b94240; }
+.brand-mark { background: #0b1f3a; color: #f4b942; }
+.city-pill:hover,.city-pill.selected { background: #0b1f3a; border-color: #0b1f3a; color: #fff; }
+.button-outline { color: #0b1f3a; border-color: #cbd4e1; }
+.button-outline:hover { border-color: #0b1f3a; }
+.filter-tag,.university-card > span,.colocation-callout-icon { background: #fff3d6; color: #805100; }
+.colocation-callout,.colocation-detail { background: #fff8e9; border-color: #f0d9a8; }
+.colocation-callout strong,.colocation-detail > strong,.colocation-detail b { color: #573b0d; }
+.colocation-callout p,.colocation-detail p { color: #685a40; }
+.badge.verified,.badge.pending { background: #fff0c9; color: #694600; }
+.badge.verified { border-color: #e8bd62; }
+.trust-section { background: #0b1f3a; }
+.trust-copy h2,.trust-point strong { color: #fff; }
+.trust-copy > .eyebrow,.trust-point > span { color: #f4b942; }
+.trust-copy > p,.trust-point p { color: #d3ddeb; }
+.trust-stamp { background: #f4b942; color: #0b1f3a; }
+.trust-floating { background: #fff; }
+.trust-floating strong { color: #15243a; }
+.trust-floating small { color: #66758a; }
+.check-shield { background: #fff3d6; color: #805100; }
+.inline-link { color: #0b1f3a; border-color: #d99a16; }
+.map-legend .legend-dot { background: #f4b942; box-shadow: 0 0 0 3px #f4b94240; }
+.map-legend .legend-campus { background: #0b1f3a; box-shadow: 0 0 0 3px #0b1f3a30; }
+.listing-marker span { border-color: #0b1f3a; background: #f4b942; }
+.map-listing-button { background: #0b1f3a; color: #fff; }
+.map-listing-button:hover { background: #f4b942; color: #0b1f3a; }
+.leaflet-tooltip { color: #0b1f3a; }
+.site-footer { background: #07152a; }
+.brand-light .brand-mark { background: #f4b942; color: #0b1f3a; }
+.footer-email,.footer-contact a,.footer-column .admin-entry,.footer-bottom a { color: #f4b942; }
+.detail-price,.detail-costs strong { color: #0b1f3a; }
+.detail-specs span { background: #f1f4f9; color: #35455c; }
+.owner-colocation-check input { accent-color: #d99a16; }
+.dashboard-stats strong { color: #0b1f3a; }
+body.dark .site-header { background: #07152a; }
+body.dark .site-header .brand-mark,body.dark .brand-mark { background: #f4b942; color: #0b1f3a; }
+body.dark .site-header .brand-name > span,body.dark .brand-light .brand-name > span { color: #f4b942; }
+body.dark .main-nav { background: #07152a; }
+body.dark .nav-link:hover,body.dark .nav-link.active { color: #f4b942; }
+body.dark .trust-section { background: #0b1f3a; }
+body.dark .trust-copy h2 span,body.dark .owner-benefits h2 span { color: #f4b942; }
+body.dark .city-pill.selected,body.dark .city-pill:hover { background: #f4b942; border-color: #f4b942; color: #0b1f3a; }
+body.dark .button-primary,body.dark .button-primary:hover { background: #f4b942; color: #0b1f3a; }
+body.dark .button-lime { background: #f4b942; color: #0b1f3a; }
+body.dark .filter-tag,body.dark .university-card > span { background: #34445c; color: #ffd166; }
+body.dark .colocation-callout,body.dark .colocation-detail { background: #172f4d; border-color: #40536b; }
+body.dark .colocation-callout strong,body.dark .colocation-detail > strong,body.dark .colocation-detail b { color: #ffd166; }
+body.dark .colocation-callout p,body.dark .colocation-detail p { color: #d3ddeb; }
+body.dark .badge.verified,body.dark .badge.pending { background: #f4b942; color: #0b1f3a; }
+body.dark .detail-price,body.dark .detail-costs strong,body.dark .dashboard-stats strong { color: #ffd166; }
+body.dark .map-listing-button { background: #0b1f3a; color: #fff; }
+body.dark .map-listing-button:hover { background: #f4b942; color: #0b1f3a; }
+@media (max-width: 650px) { .main-nav { background: #0b1f3a; }.main-nav .nav-link,.main-nav .theme-toggle { color: #fff; }.main-nav .nav-link:hover,.main-nav .nav-link.active { color: #f4b942; } }
