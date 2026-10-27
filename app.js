@@ -251,6 +251,11 @@ function renderMap() {
   }
   const beninBounds = window.L.latLngBounds([6.2, 0.7], [12.5, 3.9]);
   listingsMap = window.L.map(map, {
+    dragging: false,
+    touchZoom: false,
+    doubleClickZoom: false,
+    boxZoom: false,
+    keyboard: false,
     scrollWheelZoom: false,
     maxBounds: beninBounds,
     maxBoundsViscosity: 1,
